@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from pwdlib import PasswordHash
 
 from datetime import datetime, timedelta, timezone
-from jose import jwt
-
+from jose import jwt, JWTError
 
 from app.database import get_db
 from app.models import User
@@ -13,28 +13,56 @@ from app.schemas import UserLogin
 
 router = APIRouter()
 
-#pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-#def hash_password(password: str):
-  #  return pwd_context.hash(password)
-
-#def hash_password(password: str):
- #   print("PASSWORD:", password)
-  #  print("TYPE:", type(password))
-   # print("LENGTH:", len(password))
-    #return pwd_context.hash(password)
-
 password_hash = PasswordHash.recommended()
 
 SECRET_KEY = "temporary-secret-key-change-later"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def hash_password(password: str):
     return password_hash.hash(password)
 
 def verify_password(plain_password: str, hashed_password: str):
     return password_hash.verify(plain_password, hashed_password)
+
+def get_current_user(
+        token: str = Depends(oauth2_scheme),
+        db: Session = Depends(get_db)
+):
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+
+        email = payload.get("sub")
+
+        if email is None:
+            return {
+                "error": "Invalid token"
+            }
+        
+    except JWTError:
+        return {
+            "error": "Invalid token"
+        }
+    
+    user = (
+        db.query(User)
+        .filter(User.email == email)
+        .first()
+    )
+
+    if user is None:
+        return {
+            "error": "User not found"
+        }
+    
+    return user
+
+
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -83,11 +111,15 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
         }
     }
 
+
 @router.post("/login")
-def login_user(user: UserLogin, db: Session = Depends(get_db)):
+def login_user(
+    form_data: OAuth2PasswordRequestForm = Depends(), 
+    db: Session = Depends(get_db)
+    ):
     existing_user = (
         db.query(User)
-        .filter(User.email == user.email)
+        .filter(User.email == form_data.username)
         .first()
     )
 
@@ -96,7 +128,7 @@ def login_user(user: UserLogin, db: Session = Depends(get_db)):
             "error": "Invalid email or password"
         }
     
-    if not verify_password(user.password, existing_user.hashed_password):
+    if not verify_password(form_data.password, existing_user.hashed_password):
         return {
             "error": "Invalid email or password"
         }

@@ -1,9 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 
 from app.database import Base, engine
 from app import models
 from app.routers.applications import router as application_router
-from app.routers.auth import router as auth_router
+from app.routers.auth import router as auth_router, get_current_user
+
 
 app = FastAPI()
 Base.metadata.create_all(bind=engine)
@@ -39,6 +40,13 @@ def get_jobs(status: str = None):
     return{
         "message": "Job list fetched",
         "status_filter": status
+    }
+
+@app.get("/me")
+def get_me(current_user = Depends(get_current_user)):
+    return{
+        "id": current_user.id,
+        "email": current_user.email
     }
 
 
