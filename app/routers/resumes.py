@@ -43,3 +43,25 @@ def upload_resume(
         "saved_path": file_path,
         "user_id": current_user.id
     }
+
+@router.get("/resumes")
+def get_resumes(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    resumes = (
+        db.query(Resume)
+        .filter(Resume.user_id == current_user.id)
+        .all()
+    )
+    return {
+        "count": len(resumes),
+        "resumes": [
+            {
+                "id": resume.id,
+                "filename": resume.filename,
+                "file_path": resume.file_path
+            }
+            for resume in resumes
+        ]
+    }
