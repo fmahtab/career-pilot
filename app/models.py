@@ -23,3 +23,14 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
 
     hashed_password = Column(String, nullable=False)
+
+class Resume(Base):
+    __tablename__ = "resumes"
+
+    id = Column(Integer, primary_key=True)
+
+    filename = Column(String, nullable=False)
+
+    file_path = Column(String, nullable=False)
+    
+    user_id = Column(Integer, nullable=False)
