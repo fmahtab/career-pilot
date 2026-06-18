@@ -4,16 +4,22 @@ from sqlalchemy.orm import Session
 from app.schemas import JobApplication
 from app.models import Application
 from app.database import get_db
+from app.routers.auth import get_current_user
 
 router = APIRouter()
 applications = []
 
 @router.post("/applications")
-def create_application(application: JobApplication, db: Session = Depends(get_db)):
+def create_application(
+    application: JobApplication, 
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
     new_app = Application(
         company=application.company,
         position=application.position,
-        status=application.status
+        status=application.status,
+        user_id=current_user.id
     )
 
     db.add(new_app)
@@ -29,18 +35,18 @@ def create_application(application: JobApplication, db: Session = Depends(get_db
             "status": new_app.status
         }
     }
-#def create_application(application: JobApplication):
-#    applications.append(application.model_dump())
-
-#    return{
-#        "message": "Application Created",
-#        "application": application.model_dump()
-#    }
 
 
 @router.get("/applications")
-def get_applications(db: Session = Depends(get_db)):
-    applications = db.query(Application).all()
+def get_applications(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)    
+):
+    applications = (
+        db.query(Application)
+        .filter(Application.user_id == current_user.id)
+        .all()
+    )
    
     return{
         "count": len(applications),

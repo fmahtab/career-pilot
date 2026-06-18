@@ -13,6 +13,8 @@ class Application(Base):
 
     status = Column(String, nullable=False)
 
+    user_id = Column(Integer, nullable=False)
+
 class User(Base):
     __tablename__ = "users"
 
