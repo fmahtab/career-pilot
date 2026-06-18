@@ -64,41 +64,49 @@ def get_applications(
 @router.get("/applications/{application_id}")
 def get_applications(
     application_id: int,
-    db: Session = Depends(get_db)
-    ):
-        application = (
-        db.query(Application)
-        .filter(Application.id == application_id)
-        .first()
-        )
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    application = (
+    db.query(Application)
+    .filter(
+        Application.id == application_id,
+        Application.user_id == current_user.id
+    )
+    .first()
+    )
 
-        if not application:
-            return {"error": "Application not found"}
+    if not application:
+        return {"error": "Application not found"}
 
-        return{
-            "id": application.id,
-            "company": application.company,
-            "position": application.position,
-            "status": application.status
-        }
+    return{
+        "id": application.id,
+        "company": application.company,
+        "position": application.position,
+        "status": application.status
+    }
 
 @router.put("/applications/{application_id}")
 def update_application(
     application_id: int,
     updated_application: JobApplication,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
     application = (
         db.query(Application)
-        .filter(Application.id == application_id)
+        .filter(
+            Application.id == application_id,
+            Application.user_id == current_user.id
+        )
         .first()
     )
 
     if not application:
         return {"error": "Application not found"}
     
-    application.company = updated_application.company,
-    application.position = updated_application.position,
+    application.company = updated_application.company
+    application.position = updated_application.position
     application.status = updated_application.status
 
     db.commit()
@@ -117,11 +125,15 @@ def update_application(
 @router.delete("/applications/{application_id}")
 def delete_application(
     application_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
     application = (
          db.query(Application)
-         .filter(Application.id == application_id)
+         .filter(
+            Application.id == application_id,
+            Application.user_id == current_user.id
+        )
          .first()
     )
 
@@ -135,6 +147,6 @@ def delete_application(
 
     return {
          "message": "Application deleted successfully",
-         "deleted_application_id": application_id
+         "deleted_application_id": deleted_id
     }
 
