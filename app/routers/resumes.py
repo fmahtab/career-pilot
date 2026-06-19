@@ -1,11 +1,10 @@
 import os
 from fastapi import APIRouter, Depends, UploadFile, File
-
 from app.routers.auth import get_current_user
-
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Resume
+from app.services.resume_parser import extract_text_from_resume
 
 router = APIRouter()
 
@@ -24,10 +23,15 @@ def upload_resume(
     with open(file_path, "wb") as buffer:
         buffer.write(file.file.read())
 
+    resume_text = extract_text_from_resume(file_path)
+
+    print(f"Parsed {len(resume_text)} characters from resume")
+
     new_resume = Resume(
         filename = file.filename,
         file_path = file_path,
-        user_id = current_user.id
+        user_id = current_user.id,
+        parsed_text = resume_text
     )
 
     db.add(new_resume)

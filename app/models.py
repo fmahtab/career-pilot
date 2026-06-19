@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Text
 from app.database import Base
 
 
@@ -32,5 +32,7 @@ class Resume(Base):
     filename = Column(String, nullable=False)
 
     file_path = Column(String, nullable=False)
-    
+
     user_id = Column(Integer, nullable=False)
+
+    parsed_text = Column(Text, nullable=True)
