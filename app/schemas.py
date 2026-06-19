@@ -14,3 +14,6 @@ class UserCreate(BaseModel):
 class UserLogin(BaseModel):
     email: str
     password: str
+
+class JobMatchRequest(BaseModel):
+    job_description: str
