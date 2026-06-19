@@ -19,10 +19,7 @@ def upload_resume(
 ):
     os.makedirs(UPLOAD_DIR, exist_ok=True)
     
-    file_path = os.path.join(
-        UPLOAD_DIR,
-        f"user_{current_user.id}_{file.filename}"
-    )
+    file_path = f"{UPLOAD_DIR}/user_{current_user.id}_{file.filename}"
 
     with open(file_path, "wb") as buffer:
         buffer.write(file.file.read())
@@ -64,4 +61,60 @@ def get_resumes(
             }
             for resume in resumes
         ]
+    }
+
+@router.get("/resumes/{resume_id}")
+def get_resume(
+    resume_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    resume = (
+        db.query(Resume)
+        .filter(
+            Resume.id == resume_id,
+            Resume.user_id == current_user.id
+        )
+        .first()
+    )
+
+    if not resume:
+        return {
+            "error": "Resume not found"
+        }
+    
+    return {
+        "id": resume.id,
+        "filename": resume.filename,
+        "file_path": resume.file_path 
+    }
+
+@router.delete("/resumes/{resume_id}")
+def delete_resume(
+    resume_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    resume = (
+        db.query(Resume)
+        .filter(
+            Resume.id == resume_id,
+            Resume.user_id == current_user.id
+        )
+        .first()
+    )
+
+    if not resume:
+        return {
+            "error": "Resume not found"
+        }
+
+    deleted_id = resume.id
+
+    db.delete(resume)
+    db.commit()
+
+    return {
+        "message": "Resume deleted successfully",
+        "deleted_resume_id": deleted_id
     }
