@@ -16,6 +16,7 @@ UPLOAD_DIR = "uploads/resumes"
 ALLOWED_EXTENSIONS = [".pdf", ".docx"]
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
 
+# Upload and parse a resume file
 @router.post("/resumes/upload")
 def upload_resume(
     file: UploadFile = File(...),
@@ -62,6 +63,7 @@ def upload_resume(
         "user_id": current_user.id
     }
 
+# Return all resumes belonging to the current user
 @router.get("/resumes")
 def get_resumes(
     db: Session = Depends(get_db),
@@ -84,6 +86,7 @@ def get_resumes(
         ]
     }
 
+# Return a specific resume owned by the current user
 @router.get("/resumes/{resume_id}")
 def get_resume(
     resume_id: int,
@@ -110,6 +113,7 @@ def get_resume(
         "file_path": resume.file_path 
     }
 
+# Delete a specific resume owned by the current user
 @router.delete("/resumes/{resume_id}")
 def delete_resume(
     resume_id: int,
@@ -140,6 +144,7 @@ def delete_resume(
         "deleted_resume_id": deleted_id
     }
 
+# Match a resume against a job description
 @router.post("/resumes/{resume_id}/match")
 def match_resume(
     resume_id: int,

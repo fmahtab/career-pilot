@@ -82,6 +82,7 @@ def create_access_token(data: dict):
     return encoded_jwt
 
 
+# Register a new user account
 @router.post("/register")
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
     
@@ -112,6 +113,7 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     }
 
 
+# Login and return a JWT access token
 @router.post("/login")
 def login_user(
     form_data: OAuth2PasswordRequestForm = Depends(), 

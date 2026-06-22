@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.schemas import JobApplication
-from app.models import Application, User, Resume
+from app.models import Application, Resume
 from app.database import get_db
 from app.routers.auth import get_current_user
 
 router = APIRouter()
-applications = []
 
+# Create a new job application
 @router.post("/applications")
 def create_application(
     application: JobApplication, 
@@ -41,6 +41,7 @@ def create_application(
     }
 
 
+# Return all applications belonging to the current user
 @router.get("/applications")
 def get_applications(
     db: Session = Depends(get_db),
@@ -65,7 +66,8 @@ def get_applications(
         ]
     }
    
-@router.get("/applications/{application_id}")
+# Return a specific application owned by the current user
+@router.get("/get_application/{application_id}")
 def get_applications(
     application_id: int,
     db: Session = Depends(get_db),
@@ -93,6 +95,7 @@ def get_applications(
         "cover_letter": application.cover_letter
     }
 
+# Update a specific application owned by the current user
 @router.put("/applications/{application_id}")
 def update_application(
     application_id: int,
@@ -115,6 +118,8 @@ def update_application(
     application.company = updated_application.company
     application.position = updated_application.position
     application.status = updated_application.status
+    application.application_url = updated_application.application_url
+    application.job_description = updated_application.job_description
 
     db.commit()
     db.refresh(application)
@@ -122,13 +127,16 @@ def update_application(
     return {
          "message": "Application updated successfully",
          "application": {
-              "id": application.id,
-              "company": application.company,
-              "position": application.position,
-              "status": application.status
+            "id": application.id,
+            "company": application.company,
+            "position": application.position,
+            "status": application.status,
+            "application_url": application.application_url,
+            "job_description": application.job_description
          }
     }
 
+# Delete a specific application owned by the current user
 @router.delete("/applications/{application_id}")
 def delete_application(
     application_id: int,
@@ -157,6 +165,7 @@ def delete_application(
          "deleted_application_id": deleted_id
     }
 
+# Generate an AI-powered cover letter for a job application
 @router.post("/applications/{application_id}/cover-letter")
 def generate_cover_letter(
     application_id: int,
