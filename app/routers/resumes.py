@@ -7,10 +7,14 @@ from app.models import Resume
 from app.services.resume_parser import extract_text_from_resume
 from app.schemas import JobMatchRequest
 from app.services.matcher import match_resume_to_job
+from pathlib import Path
+import re
 
 router = APIRouter()
 
 UPLOAD_DIR = "uploads/resumes"
+ALLOWED_EXTENSIONS = [".pdf", ".docx"]
+MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
 
 @router.post("/resumes/upload")
 def upload_resume(
@@ -20,20 +24,31 @@ def upload_resume(
 ):
     os.makedirs(UPLOAD_DIR, exist_ok=True)
     
-    file_path = f"{UPLOAD_DIR}/user_{current_user.id}_{file.filename}"
+    extension = Path(file.filename).suffix.lower()
+    if extension not in ALLOWED_EXTENSIONS:
+        return {"error": "Only PDF and DOCX files are allowed"}
+
+    safe_filename = re.sub(r"[^a-zA-Z0-9_.-]", "_", file.filename)
+
+    file_path = f"{UPLOAD_DIR}/user_{current_user.id}_{safe_filename}"
+
+    file_content = file.file.read()
+
+    if len(file_content) > MAX_FILE_SIZE:
+        return {"error": "File size must be 5 MB or less"}
 
     with open(file_path, "wb") as buffer:
-        buffer.write(file.file.read())
+        buffer.write(file_content)
 
     resume_text = extract_text_from_resume(file_path)
 
     print(f"Parsed {len(resume_text)} characters from resume")
 
     new_resume = Resume(
-        filename = file.filename,
-        file_path = file_path,
-        user_id = current_user.id,
-        parsed_text = resume_text
+        filename=safe_filename,
+        file_path=file_path,
+        user_id=current_user.id,
+        parsed_text=resume_text
     )
 
     db.add(new_resume)
