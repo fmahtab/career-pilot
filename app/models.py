@@ -14,6 +14,12 @@ class Application(Base):
     status = Column(String, nullable=False)
 
     user_id = Column(Integer, nullable=False)
+    
+    application_url = Column(String, nullable=True)
+
+    job_description = Column(Text, nullable=True)
+
+    cover_letter = Column(Text, nullable=True)
 
 class User(Base):
     __tablename__ = "users"
