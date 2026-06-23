@@ -20,7 +20,7 @@ app.include_router(resume_router)
 # API welcome endpoint
 @app.get("/")
 def home():
-    return {"message": "AI Job Tracker API"}
+    return {"message": "CareerPilot API"}
 
 # Return the currently authenticated user
 @app.get("/me")
