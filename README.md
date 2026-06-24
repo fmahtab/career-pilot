@@ -1,6 +1,6 @@
 # CareerPilot
 
-CareerPilot is an AI-focused job application management platform built with FastAPI and PostgreSQL. It helps users track job applications, manage resumes, analyze job descriptions, and generate career-related insights.
+CareerPilot is a job application management platform built with FastAPI and PostgreSQL. It helps users track job applications, manage resumes, match resumes against job descriptions, and generate tailored cover letters.
 
 ## Features
 
@@ -52,6 +52,8 @@ CareerPilot is an AI-focused job application management platform built with Fast
 * python-docx
 * PyPDF
 * python-dotenv
+* pytest
+* Docker
 
 ## Environment Variables
 
@@ -125,6 +127,32 @@ uvicorn app.main:app --reload
 http://127.0.0.1:8000/docs
 ```
 
+## Running with Docker
+
+### Build the Docker Image
+
+```bash
+docker build -t careerpilot .
+```
+
+### Run the Container
+
+```bash
+docker run -p 8000:8000 --env-file .env careerpilot
+```
+
+### Open the Application
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+## Running Tests
+
+```bash
+python -m pytest
+```
+
 ## Roadmap
 
 ### Completed
@@ -141,14 +169,14 @@ http://127.0.0.1:8000/docs
 * Cover letter generation
 * Upload validation
 * Environment variable configuration
+* Automated API testing
+* Docker support
 
 ### Planned
 
 * AI-powered cover letter generation
 * Improved matching engine
 * Interview tracking
-* Automated API testing
-* Docker support
 * Deployment
 
 ## Author
