@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:16
+    container_name: careerpilot_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: testdb
+      POSTGRES_DB: job_tracker
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: careerpilot_api
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:

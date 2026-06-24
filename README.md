@@ -54,10 +54,11 @@ CareerPilot is a job application management platform built with FastAPI and Post
 * python-dotenv
 * pytest
 * Docker
+* Docker Compose
 
 ## Environment Variables
 
-Create a `.env` file in the project root and replace the placeholder values with your own local credentials:
+Create a `.env` file in the project root:
 
 ```env
 DATABASE_URL=postgresql://postgres:your_password@localhost:5432/job_tracker
@@ -68,90 +69,55 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 
 Make sure:
 
-* `your_password` matches your local PostgreSQL password.
-* `job_tracker` matches your database name.
-* `your-secret-key` is replaced with a long random secret.
+* `your_password` matches your PostgreSQL password
+* `job_tracker` matches your database name
+* `your-secret-key` is replaced with a long random secret
 
-> Note: The `.env` file is excluded from Git and should never be committed to the repository.
+> The `.env` file is excluded from Git and should never be committed.
 
-## Getting Started
+---
 
-### 1. Clone the Repository
+## Running the Application
 
-```bash
-git clone https://github.com/fmahtab/career-pilot.git
-cd career-pilot
-```
+Choose one of the following approaches:
 
-### 2. Create a Virtual Environment
+### Local Development
 
-```bash
-python -m venv venv
-```
+Run CareerPilot directly on your machine using Python, PostgreSQL, and a virtual environment.
 
-### 3. Activate the Virtual Environment
+➡️ [Local Setup Guide](docs/local-setup.md)
 
-Windows:
+### Docker
 
-```bash
-venv\Scripts\activate
-```
+Run CareerPilot inside a Docker container.
 
-### 4. Install Dependencies
+➡️ [Docker Setup Guide](docs/docker.md)
 
-```bash
-pip install -r requirements.txt
-```
+### Docker Compose (Recommended)
 
-### 5. Create a PostgreSQL Database
+Run both the CareerPilot API and PostgreSQL database with a single command.
 
-Create a database named:
+➡️ [Docker Compose Guide](docs/docker-compose.md)
 
-```text
-job_tracker
-```
-
-### 6. Configure Environment Variables
-
-Create the `.env` file using the example above.
-
-### 7. Run the Application
-
-```bash
-uvicorn app.main:app --reload
-```
-
-### 8. Open Swagger UI
-
-```text
-http://127.0.0.1:8000/docs
-```
-
-## Running with Docker
-
-### Build the Docker Image
-
-```bash
-docker build -t careerpilot .
-```
-
-### Run the Container
-
-```bash
-docker run -p 8000:8000 --env-file .env careerpilot
-```
-
-### Open the Application
-
-```text
-http://127.0.0.1:8000/docs
-```
+---
 
 ## Running Tests
 
 ```bash
 python -m pytest
 ```
+
+---
+
+## API Documentation
+
+After starting the application, open:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
 
 ## Roadmap
 
@@ -171,6 +137,7 @@ python -m pytest
 * Environment variable configuration
 * Automated API testing
 * Docker support
+* Docker Compose support
 
 ### Planned
 
@@ -178,6 +145,8 @@ python -m pytest
 * Improved matching engine
 * Interview tracking
 * Deployment
+
+---
 
 ## Author
 
