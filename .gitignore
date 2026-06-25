@@ -1,11 +1,14 @@
 # Python
 venv/
 __pycache__/
-*.pyc
+*.py[cod]
 .pytest_cache/
 
 # Environment variables
 .env
+.env.local
+.env.docker
+.env.compose
 
 # VS Code
 .vscode/

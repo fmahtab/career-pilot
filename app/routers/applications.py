@@ -5,6 +5,7 @@ from app.schemas import JobApplication
 from app.models import Application, Resume
 from app.database import get_db
 from app.routers.auth import get_current_user
+from app.services.ai_service import generate_cover_letter as generate_ai_cover_letter
 
 router = APIRouter()
 
@@ -199,18 +200,16 @@ def generate_cover_letter(
             raise HTTPException(status_code=400, detail="Parsed resume text is required")
 
 
-    cover_letter = f"""
-Dear Hiring Manager,
-
-I am excited to apply for the {application.position} role at {application.company}.
-
-Based on my background and the job description, I believe my experience aligns well with this opportunity.
-
-[AI-generated content goes here.]
-
-Sincerely,
-{current_user.email}
-"""
+    if not application.job_description:
+        raise HTTPException(
+            status_code=400,
+            detail="Job description is required to generate a cover letter"
+        )
+    
+    cover_letter = generate_ai_cover_letter (
+        resume.parsed_text,
+        application.job_description
+    )
     
     application.cover_letter = cover_letter
     db.commit()
