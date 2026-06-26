@@ -1,60 +1,101 @@
 # CareerPilot
 
-CareerPilot is a job application management platform built with FastAPI and PostgreSQL. It helps users track job applications, manage resumes, match resumes against job descriptions, and generate tailored cover letters.
+CareerPilot is an AI-powered job application management platform built with FastAPI and PostgreSQL. It helps job seekers organize applications, manage resumes, analyze job descriptions, and generate personalized cover letters using Generative AI.
+
+The project demonstrates modern backend development practices including JWT authentication, REST APIs, PostgreSQL, Docker, resume parsing, and Claude AI integration.
 
 ## Features
 
 ### Authentication
 
-* User registration
-* Secure password hashing
-* JWT-based authentication
-* Protected API endpoints
-* Current user profile endpoint
+- User registration
+- Secure password hashing
+- JWT-based authentication
+- Protected API endpoints
+- Current user profile endpoint
 
 ### Job Application Management
 
-* Create applications
-* View applications
-* Update applications
-* Delete applications
-* User-owned application access control
+- Create, view, update, and delete job applications
+- User-owned application access control
 
 ### Resume Management
 
-* Upload PDF and DOCX resumes
-* Resume file validation
-* Secure filename sanitization
-* Resume ownership protection
-* Resume listing and retrieval
-* Resume deletion
+- Upload PDF and DOCX resumes
+- Secure filename sanitization
+- Resume ownership protection
+- Resume listing and retrieval
+- Resume deletion
 
 ### Resume Intelligence
 
-* Resume text extraction from PDF and DOCX files
-* Parsed text storage in PostgreSQL
-* Resume-to-job matching
-* Matching skills identification
-* Missing skills identification
-* Match score calculation
+- Resume text extraction
+- Parsed text storage in PostgreSQL
+- Resume-to-job matching
+- Matching skills identification
+- Missing skills identification
+- Match score calculation
 
-### Cover Letter Generation
+### AI Features
 
-* Generate tailored cover letters using application and resume data
+- AI-powered cover letter generation using Claude
+- Prompt-engineered cover letters tailored to uploaded resumes and job descriptions
+
+### Developer Experience
+
+- Docker support
+- Docker Compose support
+- Swagger/OpenAPI documentation
+- Pytest test suite
+- Environment-based configuration
 
 ## Technology Stack
 
-* Python
-* FastAPI
-* PostgreSQL
-* SQLAlchemy
-* JWT Authentication
-* python-docx
-* PyPDF
-* python-dotenv
-* pytest
-* Docker
-* Docker Compose
+### Backend
+
+- Python
+- FastAPI
+- SQLAlchemy
+
+### Database
+
+- PostgreSQL
+
+### Authentication
+
+- JWT
+- OAuth2
+
+### AI
+
+- Anthropic Claude API
+- Prompt Engineering
+
+### File Processing
+
+- PyPDF
+- python-docx
+
+### DevOps
+
+- Docker
+- Docker Compose
+
+### Testing
+
+- Pytest
+
+## Architecture
+
+CareerPilot follows a layered backend architecture.
+
+```
+
+Client ---> FastAPI Routers ---> Service Layer ---> Claude AI API ---> PostgreSQL
+
+```
+
+The AI service layer separates business logic from LLM interactions, making it easy to extend the application with additional AI features in the future.
 
 ## Environment Variables
 
@@ -111,7 +152,7 @@ python -m pytest
 
 ## API Documentation
 
-After starting the application, open:
+After starting the application, open the UI at:
 
 ```text
 http://127.0.0.1:8000/docs
@@ -123,28 +164,24 @@ http://127.0.0.1:8000/docs
 
 ### Completed
 
-* FastAPI project setup
-* PostgreSQL integration
-* SQLAlchemy models
-* User authentication
-* JWT authorization
-* User-owned applications
-* Resume upload and parsing
-* Resume text persistence
-* Resume-to-job matching
-* Cover letter generation
-* Upload validation
-* Environment variable configuration
-* Automated API testing
-* Docker support
-* Docker Compose support
+- FastAPI backend
+- PostgreSQL integration
+- JWT authentication
+- Resume upload and parsing
+- Resume-to-job matching
+- AI-powered cover letter generation
+- Docker support
+- Docker Compose support
+- Service layer architecture
+- Claude API integration
 
 ### Planned
 
-* AI-powered cover letter generation
-* Improved matching engine
-* Interview tracking
-* Deployment
+- AI resume improvement suggestions
+- Interview question generation
+- Job recommendation engine
+- Email notifications
+- Frontend dashboard
 
 ---
 
